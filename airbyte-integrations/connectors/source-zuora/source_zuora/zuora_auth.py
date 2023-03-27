@@ -16,10 +16,16 @@ class OAuth(Oauth2Authenticator):
 
     def get_refresh_request_body(self) -> Mapping[str, Any]:
         payload = super().get_refresh_request_body()
-        payload["grant_type"] = "client_credentials"
-        payload.pop("refresh_token")  # Zuora doesn't have Refresh Token parameter
-        return payload
+        if payload:
+            payload["grant_type"] = "client_credentials"
+            payload.pop("refresh_token")  # Zuora doesn't have Refresh Token parameter
+            return payload
 
+    def get_refresh_token(self) -> str:
+        return None
+
+    def get_grant_type(self) -> str:
+        return 'client_credentials'
 
 class ZuoraAuthenticator:
     def __init__(self, config: Dict):
